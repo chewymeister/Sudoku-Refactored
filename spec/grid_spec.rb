@@ -2,8 +2,14 @@ require 'spec_helper'
 
 describe Grid do
   context 'setup' do
-    it 'should be instantiated when given an argument that is 81 chars long' do
-      expect(Grid.new("209703810410205607875196023306520100100004359047309068000400980924867001050000002")).to_not be_nil
+    let(:grid) { Grid.new("209703810410205607875196023306520100100004359047309068000400980924867001050000002") }
+    
+    it 'should be an instance of Grid' do
+      expect(grid).to be_a(Grid)
+    end
+
+    it 'create a list of cells with values' do
+      expect(grid.list_of_cells_with_assigned_values.first.value).to eq "2"
     end
   end
 end
