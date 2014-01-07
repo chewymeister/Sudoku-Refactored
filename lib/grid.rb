@@ -16,6 +16,10 @@ class Grid
   def retrieve_cells_at_row(number)
     @board[number -1]
   end
+
+  def retrieve_cells_at_column(number)
+    @board.map {|row| row[number - 1]}
+  end
 end
 
 class Cell < Struct.new(:value)

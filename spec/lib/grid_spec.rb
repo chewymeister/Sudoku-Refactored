@@ -23,14 +23,15 @@ describe Grid do
     end
   end
 
-  context 'retrieve rows, columns, and cells' do
+  context 'retrieve rows, columns, and boxes' do
     it 'retrieves a row of cells' do
-      easy_grid.create_board
-      expect(easy_grid.retrieve_cells_at_row(1)[1].value).to eq "0"
+      expect(easy_grid.retrieve_cells_at_row(2).first.value).to eq "4"
       expect(easy_grid.retrieve_cells_at_row(1).count).to eq 9
-      expect(easy_grid.retrieve_cells_at_row(2)[0].value).to eq "4"
-      expect(easy_grid.retrieve_cells_at_row(4)[0].value).to eq "3"
     end    
+
+    it 'retrieves a column of cells' do
+      expect(easy_grid.retrieve_cells_at_column(1).first.value).to eq "2"
+    end
   end
 
 end
