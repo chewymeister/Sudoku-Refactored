@@ -1,6 +1,7 @@
 class Grid
   STARTING_POINTS = [0,3,6] * 3
   attr_reader :board
+
   def initialize puzzle
     @puzzle = puzzle
     create_board
