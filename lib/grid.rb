@@ -23,7 +23,11 @@ class Grid
   end
 
   def retrieve_cells_at_box(number)
-    @board.slice(number - 1,3).transpose.slice(start_point(number),3).transpose.flatten
+    extract_box(number).flatten
+  end
+
+  def extract_box(number)
+    @board.slice(number - 1,3).transpose.slice(start_point(number),3).transpose
   end
   
   def start_point(number)

@@ -36,7 +36,7 @@ describe Grid do
     it 'retrieves a box of cells' do
       expect(easy_grid.retrieve_cells_at_box(1).last.value).to eq '5'
     end
-
   end
 end
+
 
