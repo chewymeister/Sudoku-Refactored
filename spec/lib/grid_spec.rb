@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Grid do
-  context 'setup' do
     let(:easy_grid) { Grid.new("209703810410205607875196023306520100100004359047309068000400980924867001050000002") }
+  context 'setup' do
     
     it 'should be an instance of Grid' do
       expect(easy_grid).to be_a(Grid)
@@ -13,15 +13,25 @@ describe Grid do
     end
     
     it 'creates a board of cells with indices' do
-      easy_grid.assign_indices_to_board
-      expect(easy_grid.board.fetch(1).value).to eq "2"
-    end
-          
-    xit 'retrieves a row of cells' do
       easy_grid.create_board
-      expect(easy_grid.retrieve_cells_at_row(1)[0].value).to eq "2"
+      expect(easy_grid.board[0][0].value).to eq "2"
+    end
+
+    it 'is initialized with a board ready to be manipulated' do
+      # no setup required
+      expect(easy_grid.board[0][0].value).to eq "2"
+    end
+  end
+
+  context 'retrieve rows, columns, and cells' do
+    it 'retrieves a row of cells' do
+      easy_grid.create_board
+      expect(easy_grid.retrieve_cells_at_row(1)[1].value).to eq "0"
+      expect(easy_grid.retrieve_cells_at_row(1).count).to eq 9
       expect(easy_grid.retrieve_cells_at_row(2)[0].value).to eq "4"
+      expect(easy_grid.retrieve_cells_at_row(4)[0].value).to eq "3"
     end    
   end
+
 end
 
