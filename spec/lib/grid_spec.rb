@@ -48,5 +48,11 @@ describe Grid do
 
       expect(easy_grid.board[0][0].neighbours).to eq ["2", "4", "8", "3", "1", "0", "0", "9", "0"]
     end
+
+    it 'builds a list of neighbours in the same box' do
+      easy_grid.assign_all_box_neighbours
+
+      expect(easy_grid.board[0][0].neighbours).to eq ["2", "0", "9", "4", "1", "0", "8", "7", "5"]
+    end
   end
 end

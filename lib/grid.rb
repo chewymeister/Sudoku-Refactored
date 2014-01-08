@@ -50,6 +50,14 @@ class Grid
       end
     end
   end
+
+  def assign_all_box_neighbours
+    1.upto(9) do |number|
+      retrieve_cells_at_box(number).each do |cell|
+        cell.receive_neighbours retrieve_cells_at_box(number)
+      end
+    end
+  end
 end
 
 class Cell 
