@@ -15,15 +15,15 @@ class Grid
     @board = assign_values_to_cells.each_slice(9).to_a
   end
 
-  def retrieve_cells_at_row(number)
+  def retrieve_row(number)
     @board[number -1]
   end
 
-  def retrieve_cells_at_column(number)
+  def retrieve_column(number)
     @board.map {|row| row[number - 1]}
   end
 
-  def retrieve_cells_at_box(number)
+  def retrieve_box(number)
     extract_box(number).flatten
   end
 
@@ -35,28 +35,16 @@ class Grid
     STARTING_POINTS[number - 1]
   end
   
-  def assign_all_row_neighbours
+  def assign_all_sections
     1.upto(9) do |number|
-      retrieve_cells_at_row(number).each do |cell|
-        cell.receive_neighbours retrieve_cells_at_row(number)
+      retrieve_sections(number).each do |section|
+        section.each { |cell| cell.receive_neighbours section }
       end
     end
   end
 
-  def assign_all_column_neighbours
-    1.upto(9) do |number|
-      retrieve_cells_at_column(number).each do |cell|
-        cell.receive_neighbours retrieve_cells_at_column(number)
-      end
-    end
-  end
-
-  def assign_all_box_neighbours
-    1.upto(9) do |number|
-      retrieve_cells_at_box(number).each do |cell|
-        cell.receive_neighbours retrieve_cells_at_box(number)
-      end
-    end
+  def retrieve_sections(number)
+    [retrieve_row(number), retrieve_column(number), retrieve_box(number) ]
   end
 end
 

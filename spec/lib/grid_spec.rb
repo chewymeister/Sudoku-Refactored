@@ -24,35 +24,25 @@ describe Grid do
 
   context 'retrieve rows, columns, and boxes' do
     it 'retrieves a row of cells' do
-      expect(easy_grid.retrieve_cells_at_row(2).first.value).to eq '4'
+      expect(easy_grid.retrieve_row(2).first.value).to eq '4'
     end    
 
     it 'retrieves a column of cells' do
-      expect(easy_grid.retrieve_cells_at_column(1).first.value).to eq '2'
+      expect(easy_grid.retrieve_column(1).first.value).to eq '2'
     end
 
     it 'retrieves a box of cells' do
-      expect(easy_grid.retrieve_cells_at_box(1).last.value).to eq '5'
+      expect(easy_grid.retrieve_box(1).last.value).to eq '5'
     end
   end
 
   context 'assign neighbours to cells' do
-    it 'builds a list of neighbours in the same row' do
-      easy_grid.assign_all_row_neighbours
+    it 'builds a list of neighbours in the same box, row, and column' do
+      easy_grid.assign_all_sections
 
-      expect(easy_grid.board[0][0].neighbours).to eq ['2','0','9','7','0','3','8','1','0']
-    end
-
-    it 'builds a list of neighbours in the same column' do
-      easy_grid.assign_all_column_neighbours
-
-      expect(easy_grid.board[0][0].neighbours).to eq ["2", "4", "8", "3", "1", "0", "0", "9", "0"]
-    end
-
-    it 'builds a list of neighbours in the same box' do
-      easy_grid.assign_all_box_neighbours
-
-      expect(easy_grid.board[0][0].neighbours).to eq ["2", "0", "9", "4", "1", "0", "8", "7", "5"]
+      expect(easy_grid.board[0][0].neighbours).to eq ['2','0','9','7','0','3','8','1','0',
+                                                      '2','4','8','3','1','0','0','9','0',
+                                                      '2','0','9','4','1','0','8','7','5']
     end
   end
 end
