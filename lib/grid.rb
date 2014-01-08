@@ -36,10 +36,12 @@ class Grid
   end
   
   def assign_all_sections
-    1.upto(9) do |number|
-      retrieve_sections(number).each do |section|
-        section.each { |cell| cell.receive_neighbours section }
-      end
+    1.upto(9) { |number| execute_assignment(number) }
+  end
+
+  def execute_assignment(number)
+    retrieve_sections(number).each do |section|
+      section.each { |cell| cell.receive_neighbours section }
     end
   end
 
