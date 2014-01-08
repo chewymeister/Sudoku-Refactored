@@ -17,7 +17,7 @@ describe Grid do
     end
 
     it 'is initialized with a board ready to be manipulated' do
-      # no setup required
+      # now no setup required
       expect(easy_grid.board[0][0].value).to eq '2'
     end
   end
@@ -25,7 +25,6 @@ describe Grid do
   context 'retrieve rows, columns, and boxes' do
     it 'retrieves a row of cells' do
       expect(easy_grid.retrieve_cells_at_row(2).first.value).to eq '4'
-      expect(easy_grid.retrieve_cells_at_row(1).count).to eq 9
     end    
 
     it 'retrieves a column of cells' do
@@ -40,7 +39,14 @@ describe Grid do
   context 'assign neighbours to cells' do
     it 'builds a list of neighbours in the same row' do
       easy_grid.assign_all_row_neighbours
+
       expect(easy_grid.board[0][0].neighbours).to eq ['2','0','9','7','0','3','8','1','0']
+    end
+
+    it 'builds a list of neighbours in the same column' do
+      easy_grid.assign_all_column_neighbours
+
+      expect(easy_grid.board[0][0].neighbours).to eq ["2", "4", "8", "3", "1", "0", "0", "9", "0"]
     end
   end
 end

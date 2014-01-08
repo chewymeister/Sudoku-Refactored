@@ -42,6 +42,14 @@ class Grid
       end
     end
   end
+
+  def assign_all_column_neighbours
+    1.upto(9) do |number|
+      retrieve_cells_at_column(number).each do |cell|
+        cell.receive_neighbours retrieve_cells_at_column(number)
+      end
+    end
+  end
 end
 
 class Cell 
