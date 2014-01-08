@@ -34,7 +34,43 @@ class Grid
   def start_point(number)
     STARTING_POINTS[number - 1]
   end
+  
+  def assign_all_row_neighbours
+    1.upto(9) do |number|
+      retrieve_cells_at_row(number).each do |cell|
+        cell.receive_neighbours retrieve_cells_at_row(number)
+      end
+    end
+  end
 end
 
-class Cell < Struct.new(:value)
+class Cell 
+  attr_reader :value
+  attr_reader :neighbours
+  def initialize(value)
+    @value = value
+    @neighbours = []
+  end
+
+  def receive_neighbours(cell_neighbours)
+    cell_neighbours.each { |cell| @neighbours << cell.value }
+  end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

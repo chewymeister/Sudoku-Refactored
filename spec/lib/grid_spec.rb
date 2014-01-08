@@ -3,7 +3,6 @@ require 'spec_helper'
 describe Grid do
     let(:easy_grid) { Grid.new('209703810410205607875196023306520100100004359047309068000400980924867001050000002') }
   context 'setup' do
-    
     it 'should be an instance of Grid' do
       expect(easy_grid).to be_a(Grid)
     end
@@ -37,6 +36,11 @@ describe Grid do
       expect(easy_grid.retrieve_cells_at_box(1).last.value).to eq '5'
     end
   end
+
+  context 'assign neighbours to cells' do
+    it 'builds a list of neighbours in the same row' do
+      easy_grid.assign_all_row_neighbours
+      expect(easy_grid.board[0][0].neighbours).to eq ['2','0','9','7','0','3','8','1','0']
+    end
+  end
 end
-
-
