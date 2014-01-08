@@ -2,7 +2,7 @@ class Grid
   STARTING_POINTS = [0,3,6] * 3
   attr_reader :board
 
-  def initialize puzzle
+  def initialize(puzzle)
     @puzzle = puzzle
     create_board
   end
@@ -20,7 +20,7 @@ class Grid
   end
 
   def retrieve_column(number)
-    @board.map {|row| row[number - 1]}
+    @board.map { |row| row[number - 1] }
   end
 
   def retrieve_box(number)
@@ -35,18 +35,20 @@ class Grid
     STARTING_POINTS[number - 1]
   end
   
-  def assign_all_sections
-    1.upto(9) { |number| execute_assignment(number) }
+  def assign_neighbours_for_all_sections
+    1.upto(9) { |number| iterate_through_rows_columns_boxes number }
   end
 
-  def execute_assignment(number)
-    retrieve_sections(number).each do |section|
-      section.each { |cell| cell.receive_neighbours section }
-    end
+  def iterate_through_rows_columns_boxes(number)
+    retrieve_sections(number).each { |section| assign_neighbours_to_cell section }
+  end
+
+  def assign_neighbours_to_cell(neighbours)
+    neighbours.each { |cell| cell.receive_neighbours neighbours }
   end
 
   def retrieve_sections(number)
-    [retrieve_row(number), retrieve_column(number), retrieve_box(number) ]
+    [ retrieve_row(number), retrieve_column(number), retrieve_box(number) ]
   end
 end
 
@@ -62,13 +64,6 @@ class Cell
     cell_neighbours.each { |cell| @neighbours << cell.value }
   end
 end
-
-
-
-
-
-
-
 
 
 

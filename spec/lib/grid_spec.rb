@@ -37,8 +37,8 @@ describe Grid do
   end
 
   context 'assign neighbours to cells' do
-    it 'builds a list of neighbours in the same box, row, and column' do
-      easy_grid.assign_all_sections
+    it 'takes grid section by section and assigns neighbours to cells in the same section' do
+      easy_grid.assign_neighbours_for_all_sections
 
       expect(easy_grid.board[0][0].neighbours).to eq ['2','0','9','7','0','3','8','1','0',
                                                       '2','4','8','3','1','0','0','9','0',
