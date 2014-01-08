@@ -29,7 +29,15 @@ class Grid
   end
 
   def extract_box(number)
-    @board.slice(every_three_rows(number),3).transpose.slice(every_three_columns(number),3).transpose
+    three_columns_at(number, three_rows_at(number))
+  end
+
+  def three_columns_at(number, three_rows)
+    three_rows.slice(every_three_columns(number),3).transpose
+  end
+
+  def three_rows_at(number)
+    @board.slice(every_three_rows(number),3).transpose
   end
 
   def every_three_rows(number)
@@ -61,7 +69,7 @@ class Grid
   end
 
   def attempt_solution
-    @board.flatten.map(&:attempt_solution)
+    @board.flatten.each(&:attempt_solution)
   end
 
   def inspect_board
@@ -90,7 +98,11 @@ class Cell
   
   def attempt_solution
     @candidates -= @neighbours
-    @value = @candidates.first if @candidates.count == 1
+    @value = @candidates.pop if @candidates.count == 1
+  end
+
+  def solved?
+    @candidates.empty?
   end
 end
 
