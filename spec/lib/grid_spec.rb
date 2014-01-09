@@ -57,7 +57,7 @@ describe Grid do
     it 'checks to see if board has been solved' do
       easy_grid.solve_board!
 
-      expect(easy_grid.solved?).to be_true
+      expect(easy_grid.board_is_solved?).to be_true
     end
 
     def cycle_through_solution

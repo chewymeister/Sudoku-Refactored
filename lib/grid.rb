@@ -28,10 +28,6 @@ class Grid
     three_columns_at(number, three_rows_at(number)).flatten
   end
 
-  def extract_box(number)
-    three_columns_at(number, three_rows_at(number))
-  end
-
   def three_columns_at(number, three_rows)
     three_rows.slice(every_three_columns(number),3).transpose
   end
@@ -72,16 +68,17 @@ class Grid
     @board.flatten.each(&:attempt_solution)
   end
 
-  def solved?
+  def board_is_solved?
     @board.flatten.select(&:unsolved?).count == 0
   end
 
   def solve_board!
-    until solved?
-      assign_neighbours_for_all_sections
-      attempt_solution
+    prepare_board_then_solve until board_is_solved?
+  end
 
-    end
+  def prepare_board_then_solve
+    assign_neighbours_for_all_sections
+    attempt_solution
   end
 
   def inspect_board
@@ -110,10 +107,20 @@ class Cell
   end
   
   def attempt_solution
-    if @value == '0'
-      @candidates -= @neighbours.uniq
-      @value = @candidates.pop if @candidates.count == 1
-    end
+    eliminate_candidates if unsolved?
+    assign_candidate_to_value if one_candidate_left? 
+  end
+
+  def eliminate_candidates
+    @candidates -= @neighbours.uniq
+  end
+
+  def assign_candidate_to_value
+    @value = @candidates.pop 
+  end
+  
+  def one_candidate_left?
+    @candidates.count == 1
   end
 
   def unsolved?
