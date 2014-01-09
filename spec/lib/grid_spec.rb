@@ -67,8 +67,18 @@ describe Grid do
     
     it 'stops solution attempt when looping' do
       hard_grid.solve_hard_board!
+      easy_grid.solve_hard_board!
 
-      expect(hard_grid).to_not be_board_solved
+      #expect(easy_grid).to be_board_solved
+      expect(hard_grid).not_to be_board_solved
+    end
+
+    it 'tries a guessed solution if looping' do
+      hard_grid.single_solution_attempt
+      board_before_guess = hard_grid.board_values
+      hard_grid.guess_cell
+
+      expect(hard_grid.board_values).not_to eq board_before_guess
     end
   end
 

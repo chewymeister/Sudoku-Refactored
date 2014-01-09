@@ -4,6 +4,7 @@ class Grid
   attr_reader :board
 
   def initialize(puzzle)
+    @outstanding = 81
     @puzzle = puzzle
     create_board
   end
@@ -69,32 +70,54 @@ class Grid
   end
 
   def board_solved?
-    @board.flatten.select(&:unsolved?).count == 0
+    unsolved_cells.count == 0
+  end
+
+  def unsolved_cells
+    @board.flatten.select(&:unsolved?)
   end
 
   def solve_board!
-    prepare_board_then_solve until board_solved?
+    single_solution_attempt until board_solved?
   end
 
-  def prepare_board_then_solve
+  def single_solution_attempt
     assign_neighbours_for_all_sections
     attempt_solution
   end
 
   def solve_hard_board!
-    outstanding, looping = 81, false
-    until board_solved? || outstanding == unsolved_cell_count?
-      prepare_board_then_solve
-      outstanding = unsolved_cell_count
-      if outstanding == unsolved_cell_count
-        try_harder
-        break
-      end
+    until board_solved? 
+      single_solution_attempt
+      try_harder if looping?
+      break if looping?
+      @outstanding = unsolved_cell_count
     end
   end
 
-  def unsolved_cell_count?
-    @board.flatten.each(&:unsolved?).count
+  def single_solution_cycle
+    single_solution_attempt
+    try_harder if looping?
+    #break if looping?
+    @outstanding = unsolved_cell_count
+  end
+
+  def looping?
+    @outstanding == unsolved_cell_count
+  end
+
+  def try_harder
+    guess_cell
+    #new_grid.solve_hard!
+    #steal_solution if board_solved?
+  end
+
+  def guess_cell
+    unsolved_cells.first.guess_value!
+  end
+
+  def unsolved_cell_count
+    @board.flatten.select(&:unsolved?).count
   end
 
   def inspect_board
@@ -140,7 +163,11 @@ class Cell
   end
 
   def unsolved?
-    @value == '0'
+    @value == '0' || @value.nil?
+  end
+
+  def guess_value!
+    @value = @candidates.first
   end
 end
 
