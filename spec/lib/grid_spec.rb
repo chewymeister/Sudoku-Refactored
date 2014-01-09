@@ -52,7 +52,8 @@ describe Grid do
       before_attempt = easy_grid.board_values
       easy_grid.assign_neighbours_for_all_sections
       easy_grid.attempt_solution
-
+      
+      #raise easy_grid.board.flatten[1].candidates.inspect
       expect(easy_grid.board_values).not_to eq before_attempt
     end
   end

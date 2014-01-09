@@ -25,7 +25,7 @@ class Grid
   end
 
   def retrieve_box(number)
-    extract_box(number).flatten
+    three_columns_at(number, three_rows_at(number)).flatten
   end
 
   def extract_box(number)
@@ -86,10 +86,11 @@ end
 class Cell 
   attr_reader :value
   attr_reader :neighbours
+  attr_reader :candidates
   def initialize(value)
     @value = value
     @neighbours = []
-    @candidates = (1..9).to_a
+    @candidates = ['1','2','3','4','5','6','7','8','9']
   end
 
   def receive_neighbours(cell_neighbours)
@@ -97,7 +98,7 @@ class Cell
   end
   
   def attempt_solution
-    @candidates -= @neighbours
+    @candidates -= @neighbours.uniq
     @value = @candidates.pop if @candidates.count == 1
   end
 
