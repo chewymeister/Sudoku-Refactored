@@ -32,7 +32,6 @@ describe Grid do
     end
 
     it 'retrieves a box of cells' do
-      #easy_grid.inspect_board
       expect(easy_grid.retrieve_box(6).first.value).to eq '1'
     end
   end
@@ -49,21 +48,21 @@ describe Grid do
 
   context 'solve the puzzle' do
     it 'tell all cells to attempt solution' do
-      before_attempt = easy_grid.board_values
-      easy_grid.assign_neighbours_for_all_sections
-      easy_grid.attempt_solution
+      board_before_attempt = easy_grid.board_values
+      cycle_through_solution
 
-      expect(easy_grid.board_values).not_to eq before_attempt
+      expect(easy_grid.board_values).not_to eq board_before_attempt
     end
 
     it 'checks to see if board has been solved' do
-      3.times do 
-        easy_grid.assign_neighbours_for_all_sections
-        easy_grid.attempt_solution 
-      end
-      easy_grid.inspect_board
+      easy_grid.solve_board!
 
       expect(easy_grid.solved?).to be_true
+    end
+
+    def cycle_through_solution
+      easy_grid.assign_neighbours_for_all_sections
+      easy_grid.attempt_solution
     end
   end
 end

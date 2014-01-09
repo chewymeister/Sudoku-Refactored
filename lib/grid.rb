@@ -76,6 +76,14 @@ class Grid
     @board.flatten.select(&:unsolved?).count == 0
   end
 
+  def solve_board!
+    until solved?
+      assign_neighbours_for_all_sections
+      attempt_solution
+
+    end
+  end
+
   def inspect_board
     puts "-------------------------------------"
     @board.each do |row|
