@@ -47,9 +47,9 @@ describe Grid do
   end
 
   context 'solve the puzzle' do
-    it 'tell all cells to attempt solution' do
+    it 'tells all cells to attempt solution' do
       board_before_attempt = easy_grid.board_values
-      cycle_through_solution
+      cycle_through_solution(easy_grid)
 
       expect(easy_grid.board_values).not_to eq board_before_attempt
     end
@@ -57,12 +57,23 @@ describe Grid do
     it 'checks to see if board has been solved' do
       easy_grid.solve_board!
 
-      expect(easy_grid.board_is_solved?).to be_true
+      expect(easy_grid).to be_board_solved
     end
+  end
 
-    def cycle_through_solution
-      easy_grid.assign_neighbours_for_all_sections
-      easy_grid.attempt_solution
+  context 'solves a hard puzzle' do
+    let(:hard_grid) do Grid.new('800000000003600000070090200050007000000045700000100030001000068008500010090000400')
     end
+    
+    it 'stops solution attempt when looping' do
+      hard_grid.solve_hard_board!
+
+      expect(hard_grid).to_not be_board_solved
+    end
+  end
+
+  def cycle_through_solution(grid)
+    grid.assign_neighbours_for_all_sections
+    grid.attempt_solution
   end
 end

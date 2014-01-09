@@ -68,17 +68,33 @@ class Grid
     @board.flatten.each(&:attempt_solution)
   end
 
-  def board_is_solved?
+  def board_solved?
     @board.flatten.select(&:unsolved?).count == 0
   end
 
   def solve_board!
-    prepare_board_then_solve until board_is_solved?
+    prepare_board_then_solve until board_solved?
   end
 
   def prepare_board_then_solve
     assign_neighbours_for_all_sections
     attempt_solution
+  end
+
+  def solve_hard_board!
+    outstanding, looping = 81, false
+    until board_solved? || outstanding == unsolved_cell_count?
+      prepare_board_then_solve
+      outstanding = unsolved_cell_count
+      if outstanding == unsolved_cell_count
+        try_harder
+        break
+      end
+    end
+  end
+
+  def unsolved_cell_count?
+    @board.flatten.each(&:unsolved?).count
   end
 
   def inspect_board
