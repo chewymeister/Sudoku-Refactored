@@ -72,6 +72,10 @@ class Grid
     @board.flatten.each(&:attempt_solution)
   end
 
+  def solved?
+    @board.flatten.select(&:unsolved?).count == 0
+  end
+
   def inspect_board
     puts "-------------------------------------"
     @board.each do |row|
@@ -98,12 +102,14 @@ class Cell
   end
   
   def attempt_solution
-    @candidates -= @neighbours.uniq
-    @value = @candidates.pop if @candidates.count == 1
+    if @value == '0'
+      @candidates -= @neighbours.uniq
+      @value = @candidates.pop if @candidates.count == 1
+    end
   end
 
-  def solved?
-    @candidates.empty?
+  def unsolved?
+    @value.nil?
   end
 end
 
