@@ -52,14 +52,12 @@ describe Grid do
       before_attempt = easy_grid.board_values
       easy_grid.assign_neighbours_for_all_sections
       easy_grid.attempt_solution
-      #easy_grid.inspect_board
 
-      #raise easy_grid.board.flatten[1].candidates.inspect
       expect(easy_grid.board_values).not_to eq before_attempt
     end
 
     it 'checks to see if board has been solved' do
-      5.times do 
+      3.times do 
         easy_grid.assign_neighbours_for_all_sections
         easy_grid.attempt_solution 
       end

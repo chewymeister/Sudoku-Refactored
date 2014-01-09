@@ -109,7 +109,7 @@ class Cell
   end
 
   def unsolved?
-    @value.nil?
+    @value == '0'
   end
 end
 
