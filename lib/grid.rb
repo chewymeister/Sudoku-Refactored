@@ -65,6 +65,10 @@ class Grid
     @board.flatten.map(&:value)
   end
 
+  def to_s
+    board_values.join
+  end
+
   def attempt_solution
     @board.flatten.each(&:attempt_solution)
   end
@@ -87,18 +91,18 @@ class Grid
   end
 
   def solve_hard_board!
-    until board_solved? 
+    outstanding_before, looping = 81, false
+    while !board_solved? && !looping 
       single_solution_attempt
-      try_harder if looping?
-      break if looping?
-      @outstanding = unsolved_cell_count
+      outstanding         = @board.flatten.reject(&:unsolved?).count
+      looping             = outstanding_before == outstanding
+      outstanding_before  = outstanding
     end
+    try_harder unless board_solved?
   end
 
   def single_solution_cycle
     single_solution_attempt
-    try_harder if looping?
-    #break if looping?
     @outstanding = unsolved_cell_count
   end
 
@@ -106,10 +110,36 @@ class Grid
     @outstanding == unsolved_cell_count
   end
 
-  def try_harder
+  def old_try_harder
     guess_cell
-    #new_grid.solve_hard!
-    #steal_solution if board_solved?
+    copy = new_grid.solve_hard_board!
+    if copy.board_solved?
+      steal_solution(copy)
+      #break if board_solved? 
+    end
+  end
+
+  def try_harder
+    blank_cell = unsolved_cells.first
+    blank_cell.candidates.each do |candidate|
+      blank_cell.assume(candidate)
+      board_copy = new_grid
+
+      board_copy.solve_hard_board!
+
+      if board_copy.board_solved?
+        steal_solution(board_copy)
+        break
+      end
+    end
+  end
+
+  def steal_solution(copy)
+    @board = copy.board
+  end
+
+  def new_grid
+    self.class.new(self.to_s)
   end
 
   def guess_cell
@@ -142,16 +172,17 @@ class Cell
   end
 
   def receive_neighbours(cell_neighbours)
-    cell_neighbours.each { |cell| @neighbours << cell.value }
+    cell_neighbours.each { |cell| @neighbours << cell.value }.delete('0')
   end
   
   def attempt_solution
+  	return if !unsolved?  	
     eliminate_candidates if unsolved?
     assign_candidate_to_value if one_candidate_left? 
   end
 
   def eliminate_candidates
-    @candidates -= @neighbours.uniq
+    @candidates -= @neighbours
   end
 
   def assign_candidate_to_value
@@ -167,7 +198,16 @@ class Cell
   end
 
   def guess_value!
-    @value = @candidates.first
+    #raise @neighbours.uniq.inspect if @candidates.empty?
+    if @candidates.empty?
+      1
+    else
+      @value = @candidates.first
+    end
+  end
+
+  def assume(candidate)
+    @value = candidate
   end
 end
 
