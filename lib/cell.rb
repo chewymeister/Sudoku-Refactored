@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 class Cell 
   attr_reader :value
   attr_reader :neighbours

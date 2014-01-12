@@ -1,4 +1,4 @@
-require_relative './cell'
+require 'spec_helper'
 
 class Grid
   ROW_STARTING_POINT = [0, 0, 0, 3, 3, 3, 6, 6, 6]
