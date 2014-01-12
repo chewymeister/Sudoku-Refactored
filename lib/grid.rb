@@ -23,11 +23,11 @@ class Grid
   end
 
   def retrieve_boxes
-    (0..8).inject([]) { |boxes, index| boxes << extract_box(index) }
+    (0..8).inject([]) { |boxes, number| boxes << extract_box(number) }
   end
 
-  def extract_box(index)
-    three_columns_containing(index, from_three_rows_containing(index))
+  def extract_box(number)
+    three_columns_containing(number, from_three_rows_containing(number))
   end
 
   def from_three_rows_containing(index)
@@ -39,22 +39,22 @@ class Grid
   end
 
   def attempt
-    @cells.each { |cell| cell.attempt_to_solve_using neighbours_of cell }
+    @cells.each { |cell| cell.solve_using neighbours_of cell }
   end
 
   def neighbours_of(cell)
-    [row_containing(cell), column_containing(cell), box_containing(cell)].flatten
+    [row_holding(cell), column_holding(cell), box_holding(cell)].flatten
   end
 
-  def row_containing(cell)
+  def row_holding(cell)
     @rows.select { |row| row.include?(cell) }
   end
 
-  def column_containing(cell)
+  def column_holding(cell)
     @columns.select { |column| column.include?(cell) }
   end
 
-  def box_containing(cell)
+  def box_holding(cell)
     @boxes.select { |box| box.include?(cell) }
   end
 
@@ -76,7 +76,7 @@ class Grid
 
   def solve_board!
     @outstanding_before = 81 
-    while !solved? && !looping? 
+    while not solved? and not looping?
       attempt
       @outstanding_before = unsolved_cells.count
     end
@@ -139,7 +139,7 @@ class Cell
     @candidates = ['1','2','3','4','5','6','7','8','9']
   end
 
-  def attempt_to_solve_using(neighbours)
+  def solve_using(neighbours)
     @neighbours = neighbours.map(&:value)
     attempt_solution unless solved?
   end
