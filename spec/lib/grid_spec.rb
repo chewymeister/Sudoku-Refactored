@@ -1,7 +1,11 @@
 require 'spec_helper'
 
 describe Grid do
-    let(:easy_grid) { Grid.new('209703810410205607875196023306520100100004359047309068000400980924867001050000002') }
+  let(:easy_grid) do
+    puzzle = '209703810410205607875196023306520100100004359047309068000400980924867001050000002'
+    Grid.new(puzzle)
+  end
+
   context 'setup' do
     it 'should be an instance of Grid' do
       expect(easy_grid).to be_a(Grid)
