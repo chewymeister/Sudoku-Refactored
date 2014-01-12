@@ -33,9 +33,9 @@ class Grid
     rows.slice(STARTING_POINT[index],3).transpose.flatten
   end
 
-  def solve
+  def attempt
     @cells.each do |cell|
-      cell.assign(neighbours_of(cell))
+      cell.assign neighbours_of cell
       cell.attempt_solution unless cell.solved?
     end
   end
@@ -56,12 +56,8 @@ class Grid
     retrieve_boxes.select { |box| box.include?(cell) }
   end
 
-  def retrieve_sections(number)
-    [ retrieve_row(number), retrieve_column(number), retrieve_box(number) ]
-  end
-
   def board_values
-    @board.flatten.map(&:value)
+    @cells.map(&:value)
   end
 
   def to_s
@@ -77,23 +73,14 @@ class Grid
   end
 
   def unsolved_cells
-    @board.flatten.select(&:unsolved?)
+    @cells.select { |cell| !cell.solved? }
   end
 
   def solve_board!
-    single_solution_attempt until board_solved?
-  end
-
-  def single_solution_attempt
-    assign_neighbours_for_all_sections
-    attempt_solution
-  end
-
-  def solve_hard_board!
     outstanding_before, looping = 81, false
     while !board_solved? && !looping 
-      single_solution_attempt
-      outstanding         = @board.flatten.reject(&:unsolved?).count
+      attempt
+      outstanding         = unsolved_cells.count
       looping             = outstanding_before == outstanding
       outstanding_before  = outstanding
     end
@@ -117,8 +104,10 @@ class Grid
       #break if board_solved? 
     end
   end
-
   def try_harder
+  end
+
+  def try_harderx
     blank_cell = unsolved_cells.first
     blank_cell.candidates.each do |candidate|
       blank_cell.assume(candidate)
@@ -151,7 +140,7 @@ class Grid
 
   def inspect_board
     puts "-------------------------------------"
-    @board.each do |row|
+    retrieve_rows.each do |row|
       row.each do |cell|
         print "| #{cell.value} "
       end
@@ -171,7 +160,7 @@ class Cell
   end
 
   def assign(neighbours)
-    @neighbours = neighbours.map(&:value).delete('0')
+    @neighbours = neighbours.map(&:value)
   end
 
   def attempt_solution
@@ -191,8 +180,8 @@ class Cell
     @candidates.count == 1
   end
 
-  def unsolved?
-    @value == '0' || @value.nil?
+  def solved?
+    @value != '0'
   end
 
   def guess_value!

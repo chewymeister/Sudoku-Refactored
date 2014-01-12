@@ -44,30 +44,24 @@ describe Grid do
                                                                 '9','0','5','6','0','7','0','4','0',
                                                                 '2','0','9','4','1','0','8','7','5']
     end
-
-    xit 'takes grid section by section and assigns neighbours to cells in the same section' do
-      easy_grid.assign_neighbours_for_all_sections
-      easy_grid.inspect_board
-
-      expect(easy_grid.board[0][0].neighbours).to eq ['2','0','9','7','0','3','8','1','0',
-                                                      '2','4','8','3','1','0','0','9','0',
-                                                      '2','0','9','4','1','0','8','7','5']
-      expect(easy_grid.board[4][5].neighbours).to eq ['1','0','0','0','0','4','3','5','9',
-                                                      '5','2','0','0','0','4','3','0','9',
-                                                      '3','5','6','0','4','9','0','7','0']
-    end
   end
 
 
   context 'solve the puzzle' do
-    xit 'tells all cells to attempt solution' do
+    it 'tells all cells to attempt solution' do
       board_before_attempt = easy_grid.board_values
-      cycle_through_solution(easy_grid)
+      easy_grid.attempt
 
       expect(easy_grid.board_values).not_to eq board_before_attempt
     end
 
-    xit 'checks to see if board has been solved' do
+    it 'checks to see if board has been solved' do
+      3.times { easy_grid.attempt }
+
+      expect(easy_grid).to be_board_solved
+    end
+
+    it 'solves an easy board' do
       easy_grid.solve_board!
 
       expect(easy_grid).to be_board_solved
@@ -79,7 +73,7 @@ describe Grid do
     end
     
     xit 'stops solution attempt when looping' do
-      hard_grid.solve_hard_board!
+      hard_grid.solve_board!
       hard_grid.inspect_board
       #expect(easy_grid).to be_board_solved
       expect(hard_grid).to be_board_solved
