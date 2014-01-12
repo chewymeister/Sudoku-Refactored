@@ -72,7 +72,7 @@ describe Grid do
     let(:hard_grid) do Grid.new('800000000003600000070090200050007000000045700000100030001000068008500010090000400')
     end
     
-    xit 'stops solution attempt when looping' do
+    it 'stops solution attempt when looping' do
       hard_grid.solve_board!
       hard_grid.inspect_board
       #expect(easy_grid).to be_board_solved

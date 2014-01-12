@@ -104,16 +104,14 @@ class Grid
       #break if board_solved? 
     end
   end
-  def try_harder
-  end
 
-  def try_harderx
+  def try_harder
     blank_cell = unsolved_cells.first
     blank_cell.candidates.each do |candidate|
       blank_cell.assume(candidate)
       board_copy = new_grid
 
-      board_copy.solve_hard_board!
+      board_copy.solve_board!
 
       if board_copy.board_solved?
         steal_solution(board_copy)
@@ -123,7 +121,7 @@ class Grid
   end
 
   def steal_solution(copy)
-    @board = copy.board
+    @cells = copy.cells
   end
 
   def new_grid
