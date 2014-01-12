@@ -5,6 +5,9 @@ class Grid
 
   def initialize(puzzle)
     assign_values_to_cells_using(puzzle)
+    @rows = retrieve_rows
+    @columns = retrieve_columns
+    @boxes = retrieve_boxes
   end
 
   def assign_values_to_cells_using(puzzle)
@@ -20,9 +23,11 @@ class Grid
   end
 
   def retrieve_boxes
-    (0..8).inject([]) do |boxes, index|
-      boxes << three_columns_containing(index, from_three_rows_containing(index))
-    end
+    (0..8).inject([]) { |boxes, index| boxes << extract_box(index) }
+  end
+
+  def extract_box(index)
+    three_columns_containing(index, from_three_rows_containing(index))
   end
 
   def from_three_rows_containing(index)
@@ -34,10 +39,7 @@ class Grid
   end
 
   def attempt
-    @cells.each do |cell|
-      cell.assign neighbours_of cell
-      cell.attempt_solution unless cell.solved?
-    end
+    @cells.each { |cell| cell.attempt_to_solve_using neighbours_of cell }
   end
 
   def neighbours_of(cell)
@@ -45,15 +47,15 @@ class Grid
   end
 
   def row_containing(cell)
-    retrieve_rows.select { |row| row.include?(cell) }
+    @rows.select { |row| row.include?(cell) }
   end
 
   def column_containing(cell)
-    retrieve_columns.select { |column| column.include?(cell) }
+    @columns.select { |column| column.include?(cell) }
   end
 
   def box_containing(cell)
-    retrieve_boxes.select { |box| box.include?(cell) }
+    @boxes.select { |box| box.include?(cell) }
   end
 
   def board_values
@@ -64,11 +66,7 @@ class Grid
     board_values.join
   end
 
-  def attempt_solution
-    @board.flatten.each(&:attempt_solution)
-  end
-
-  def board_solved?
+  def solved?
     unsolved_cells.count == 0
   end
 
@@ -77,47 +75,31 @@ class Grid
   end
 
   def solve_board!
-    outstanding_before, looping = 81, false
-    while !board_solved? && !looping 
+    @outstanding_before = 81 
+    while !solved? && !looping? 
       attempt
-      outstanding         = unsolved_cells.count
-      looping             = outstanding_before == outstanding
-      outstanding_before  = outstanding
+      @outstanding_before = unsolved_cells.count
     end
-    try_harder unless board_solved?
-  end
-
-  def single_solution_cycle
-    single_solution_attempt
-    @outstanding = unsolved_cell_count
+    try_harder unless solved?
   end
 
   def looping?
-    @outstanding == unsolved_cell_count
-  end
-
-  def old_try_harder
-    guess_cell
-    copy = new_grid.solve_hard_board!
-    if copy.board_solved?
-      steal_solution(copy)
-      #break if board_solved? 
-    end
+    @outstanding_before == unsolved_cells.count
   end
 
   def try_harder
-    blank_cell = unsolved_cells.first
     blank_cell.candidates.each do |candidate|
       blank_cell.assume(candidate)
       board_copy = new_grid
 
       board_copy.solve_board!
 
-      if board_copy.board_solved?
-        steal_solution(board_copy)
-        break
-      end
+      steal_solution(board_copy) and break if board_copy.solved?
     end
+  end
+
+  def blank_cell
+    unsolved_cells.first
   end
 
   def steal_solution(copy)
@@ -157,8 +139,9 @@ class Cell
     @candidates = ['1','2','3','4','5','6','7','8','9']
   end
 
-  def assign(neighbours)
+  def attempt_to_solve_using(neighbours)
     @neighbours = neighbours.map(&:value)
+    attempt_solution unless solved?
   end
 
   def attempt_solution
@@ -182,18 +165,7 @@ class Cell
     @value != '0'
   end
 
-  def guess_value!
-    #raise @neighbours.uniq.inspect if @candidates.empty?
-    if @candidates.empty?
-      1
-    else
-      @value = @candidates.first
-    end
-  end
-
-
   def assume(candidate)
     @value = candidate
   end
 end
-

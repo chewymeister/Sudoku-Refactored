@@ -58,13 +58,13 @@ describe Grid do
     it 'checks to see if board has been solved' do
       3.times { easy_grid.attempt }
 
-      expect(easy_grid).to be_board_solved
+      expect(easy_grid).to be_solved
     end
 
     it 'solves an easy board' do
       easy_grid.solve_board!
 
-      expect(easy_grid).to be_board_solved
+      expect(easy_grid).to be_solved
     end
   end
 
@@ -75,8 +75,8 @@ describe Grid do
     it 'stops solution attempt when looping' do
       hard_grid.solve_board!
       hard_grid.inspect_board
-      #expect(easy_grid).to be_board_solved
-      expect(hard_grid).to be_board_solved
+      #expect(easy_grid).to be_solved
+      expect(hard_grid).to be_solved
     end
 
     xit 'tries a guessed solution if looping' do
