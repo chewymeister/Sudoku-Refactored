@@ -1,60 +1,59 @@
 class Grid
   ROW_STARTING_POINT = [0, 0, 0, 3, 3, 3, 6, 6, 6]
-  STARTING_POINTS = [0,3,6] * 3
-  attr_reader :board
+  STARTING_POINT = [0,3,6] * 3
+  attr_reader :cells
 
   def initialize(puzzle)
-    @outstanding = 81
-    @puzzle = puzzle
-    create_board
+    assign_values_to_cells_using(puzzle)
   end
 
-  def assign_values_to_cells
-    @puzzle.chars.map { |num| Cell.new(num) }
+  def assign_values_to_cells_using(puzzle)
+    @cells = puzzle.chars.map { |num| Cell.new(num) }
   end
   
-  def create_board
-    @board = assign_values_to_cells.each_slice(9).to_a
+  def retrieve_rows
+    @cells.each_slice(9).to_a
   end
 
-  def retrieve_row(number)
-    @board[number -1]
+  def retrieve_columns
+    retrieve_rows.transpose
   end
 
-  def retrieve_column(number)
-    @board.map { |row| row[number - 1] }
+  def retrieve_boxes
+    (0..8).inject([]) do |boxes, index|
+      boxes << three_columns_containing(index, from_three_rows_containing(index))
+    end
   end
 
-  def retrieve_box(number)
-    three_columns_at(number, three_rows_at(number)).flatten
+  def from_three_rows_containing(index)
+    retrieve_rows.slice(ROW_STARTING_POINT[index],3).transpose
   end
 
-  def three_columns_at(number, three_rows)
-    three_rows.slice(every_three_columns(number),3).transpose
+  def three_columns_containing(index, rows)
+    rows.slice(STARTING_POINT[index],3).transpose.flatten
   end
 
-  def three_rows_at(number)
-    @board.slice(every_three_rows(number),3).transpose
+  def solve
+    @cells.each do |cell|
+      cell.assign(neighbours_of(cell))
+      cell.attempt_solution unless cell.solved?
+    end
   end
 
-  def every_three_rows(number)
-    ROW_STARTING_POINT[number - 1]
-  end
-  
-  def every_three_columns(number)
-    STARTING_POINTS[number - 1]
-  end
-  
-  def assign_neighbours_for_all_sections
-    1.upto(9) { |number| iterate_through_rows_columns_boxes number }
+  def neighbours_of(cell)
+    [row_containing(cell), column_containing(cell), box_containing(cell)].flatten
   end
 
-  def iterate_through_rows_columns_boxes(number)
-    retrieve_sections(number).each { |section| assign_neighbours_to_cell section }
+  def row_containing(cell)
+    retrieve_rows.select { |row| row.include?(cell) }
   end
 
-  def assign_neighbours_to_cell(neighbours)
-    neighbours.each { |cell| cell.receive_neighbours neighbours }
+  def column_containing(cell)
+    retrieve_columns.select { |column| column.include?(cell) }
+  end
+
+  def box_containing(cell)
+    retrieve_boxes.select { |box| box.include?(cell) }
   end
 
   def retrieve_sections(number)
@@ -171,13 +170,12 @@ class Cell
     @candidates = ['1','2','3','4','5','6','7','8','9']
   end
 
-  def receive_neighbours(cell_neighbours)
-    cell_neighbours.each { |cell| @neighbours << cell.value }.delete('0')
+  def assign(neighbours)
+    @neighbours = neighbours.map(&:value).delete('0')
   end
-  
+
   def attempt_solution
-  	return if !unsolved?  	
-    eliminate_candidates if unsolved?
+    eliminate_candidates
     assign_candidate_to_value if one_candidate_left? 
   end
 
@@ -206,18 +204,9 @@ class Cell
     end
   end
 
+
   def assume(candidate)
     @value = candidate
   end
 end
-
-
-
-
-
-
-
-
-
-
 
