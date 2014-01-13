@@ -11,8 +11,11 @@ class Cell
   end
 
   def solve_using(neighbours)
-    @neighbours = neighbours.map(&:value)
     attempt_solution unless solved?
+  end
+
+  def assign(neighbours)
+    @neighbours = neighbours.map(&:value)
   end
 
   def attempt_solution

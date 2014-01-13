@@ -109,7 +109,7 @@ class Grid
   end
 
   def new_grid
-    self.class.new(self.to_s)
+    self.class.new(to_s)
   end
 
   def guess_cell
