@@ -11,6 +11,7 @@ class Cell
   end
 
   def solve_using(neighbours)
+    assign(neighbours)
     attempt_solution unless solved?
   end
 
